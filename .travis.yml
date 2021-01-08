@@ -16,7 +16,7 @@ matrix:
 install:
   - pip install -U pip
   - pip install pipenv
-  - pipenv install --dev --sequential
+  - pipenv install --dev
 
 script:
   - pipenv run tox
