@@ -17,9 +17,8 @@ install:
   - pip install pipenv
   - |
     if [[ $TRAVIS_PYTHON_VERSION == 3.4 ]]; then
-      pipenv shell
-      pip install pip==18.0
-      pipenv install
+      pip install pip==9.0.3
+      pipenv run pip install pip==9.0.3
     fi
   - pipenv install --dev
 
