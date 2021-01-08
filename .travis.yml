@@ -14,12 +14,13 @@ matrix:
       dist: xenial
 
 install:
+  - pip install pipenv
   - |
     if [[ $TRAVIS_PYTHON_VERSION == 3.4 ]]; then
-      pip install pip==9.0.3
-      pip run pip install pip==9.0.3
+      pipenv shell
+      pip install pip==18.0
+      pipenv install
     fi
-  - pip install pipenv
   - pipenv install --dev
 
 script:
