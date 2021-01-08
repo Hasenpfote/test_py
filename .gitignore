@@ -7,4 +7,3 @@ __pycache__/
 /cover
 .coverage
 .noseids
-Pipfile.lock
