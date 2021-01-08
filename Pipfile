@@ -12,6 +12,7 @@ coverage = "*"
 pycodestyle = "*"
 pydocstyle = "*"
 twine = "*"
+twine = {version = "<2.0.0", markers="python_version < '3.5'"}
 tox = "*"
 
 [requires]
