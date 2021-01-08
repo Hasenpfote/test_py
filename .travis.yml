@@ -14,9 +14,8 @@ matrix:
       dist: xenial
 
 install:
-  - python -m ensurepip --upgrade
   - pip install pipenv
-  - pipenv install --dev
+  - pipenv install --dev --sequential
 
 script:
   - pipenv run tox
