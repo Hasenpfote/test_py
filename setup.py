@@ -18,9 +18,8 @@ def _long_description():
 
 required=[
     'numpy>=1.11.2',
-    'numba>=0.38.0; python_version>="3.6"',
-    'numba>=0.38.0, <0.44.0; python_version >= "3.5" and python_version < "3.6"',
-    'llvmlite<0.29.0; python_version >= "3.5" and python_version < "3.6"',
+    'numba>=0.38.0, <0.44.0; python_version >= "3.5"',
+    'llvmlite<0.29.0; python_version >= "3.5"',
 ]
 
 
