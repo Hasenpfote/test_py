@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import re
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 # Get version without importing, which avoids dependency issues
 def get_version():
-    with open('image_packer/version.py') as version_file:
+    with open('malloc_tracer/version.py') as version_file:
         return re.search(r"""__version__\s+=\s+(['"])(?P<version>.+?)\1""",
                          version_file.read()).group('version')
 
@@ -16,31 +16,18 @@ def _long_description():
         return f.read()
 
 
-def exclude_packages(names):
-    packages = list()
-    for name in names:
-        for pattern in ('{}', '{}.*', '*.{}', '*.{}.*'):
-            packages.append(pattern.format(name))
-    return packages
-
-
-required = [
-    'Pillow>=5.0.0',
-]
-
-
 if __name__ == '__main__':
     setup(
-        name='image_packer',
+        name='malloc_tracer',
         version=get_version(),
-        description='Pack multiple images of different sizes or formats into one image.',
+        description='This is a debugging tool for tracing malloc that occurs inside a function or class.',
         long_description=_long_description(),
         author='Hasenpfote',
         author_email='Hasenpfote36@gmail.com',
-        url='https://github.com/Hasenpfote/',
+        url='https://github.com/Hasenpfote/malloc_tracer',
         download_url='',
-        packages=find_packages(exclude=exclude_packages(names=('test', 'tests'))),
-        keywords=['packing', 'rectangle-packing'],
+        packages = ['malloc_tracer'],
+        keywords=['debug', 'debugging-tool', 'tracemalloc'],
         classifiers=[
             'Programming Language :: Python',
             'Programming Language :: Python :: 3',
@@ -53,13 +40,9 @@ if __name__ == '__main__':
             'Development Status :: 5 - Production/Stable',
             'Environment :: Other Environment',
             'Intended Audience :: Developers',
-            'Topic :: Software Development :: Libraries :: Python Modules',
+            'Topic :: Software Development',
+            'Topic :: Utilities'
         ],
         python_requires='>=3.4',
-        install_requires=required,
-        entry_points={
-            'console_scripts': [
-                'impack=image_packer.cli.pack:main'
-            ],
-        }
+        install_requires=[],
     )
