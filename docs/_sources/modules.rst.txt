@@ -1,7 +1,0 @@
-fpq
-===
-
-.. toctree::
-   :maxdepth: 4
-
-   fpq
