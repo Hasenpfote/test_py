@@ -11,6 +11,7 @@ nose = "*"
 coverage = "*"
 pycodestyle = "*"
 pydocstyle = "*"
+readme-renderer = {version = "<=24.0", markers="python_version < '3.5'"}
 twine = {version = "<2.0.0", markers="python_version < '3.5'"}
 
 tox = "*"
