@@ -21,11 +21,7 @@ required=[
     'numpy>=1.11.2',
 ]
 
-if sys.version_info >= (3, 6):
-    required.extend([
-        'numba>=0.38.0, <0.44.0',
-    ])
-elif sys.version_info >= (3, 5):
+if sys.version_info >= (3, 5):
     required.extend([
         'numba>=0.38.0, <0.44.0',
         'llvmlite<0.29.0'
