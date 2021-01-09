@@ -21,7 +21,6 @@ required=[
     'Cerberus>=1.1',
     'plotly>=3.0.0',
     'notebook<6.0; python_version<"3.5"',
-    'ipywidgets>=7.2',
 ]
 
 
