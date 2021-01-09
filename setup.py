@@ -6,7 +6,7 @@ from setuptools import setup
 
 # Get version without importing, which avoids dependency issues
 def get_version():
-    with open('malloc_tracer/version.py') as version_file:
+    with open('perfbench/version.py') as version_file:
         return re.search(r"""__version__\s+=\s+(['"])(?P<version>.+?)\1""",
                          version_file.read()).group('version')
 
@@ -16,18 +16,27 @@ def _long_description():
         return f.read()
 
 
+required=[
+    'tqdm>=4.6.1',
+    'Cerberus>=1.1',
+    'plotly>=3.0.0',
+    'notebook>=5.3',
+    'ipywidgets>=7.2',
+]
+
+
 if __name__ == '__main__':
     setup(
-        name='malloc_tracer',
+        name='perfbench',
         version=get_version(),
-        description='This is a debugging tool for tracing malloc that occurs inside a function or class.',
+        description='perfbench measures execution time of code snippets with Timeit and uses Plotly to visualize the results.',
         long_description=_long_description(),
         author='Hasenpfote',
         author_email='Hasenpfote36@gmail.com',
-        url='https://github.com/Hasenpfote/malloc_tracer',
+        url='https://github.com/Hasenpfote/perfbench',
         download_url='',
-        packages = ['malloc_tracer'],
-        keywords=['debug', 'debugging-tool', 'tracemalloc'],
+        packages = ['perfbench'],
+        keywords=['benchmark', 'performance', 'plot', 'plotly'],
         classifiers=[
             'Programming Language :: Python',
             'Programming Language :: Python :: 3',
@@ -44,5 +53,5 @@ if __name__ == '__main__':
             'Topic :: Utilities'
         ],
         python_requires='>=3.4',
-        install_requires=[],
+        install_requires=required,
     )

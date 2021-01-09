@@ -1,4 +1,4 @@
-PACKAGE_NAME=malloc_tracer
+PACKAGE_NAME=perfbench
 
 HAS_PIPENV=$(shell python -c "exec('try:\n    import pipenv\n    print(\'true\')\nexcept ImportError:\n    print(\'false\')')")
 ifeq ($(HAS_PIPENV), true)

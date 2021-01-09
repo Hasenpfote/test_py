@@ -1,252 +1,185 @@
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/Hasenpfote/malloc_tracer/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/Hasenpfote/malloc_tracer.svg?branch=master)](https://travis-ci.org/Hasenpfote/malloc_tracer)
-[![PyPI version](https://badge.fury.io/py/malloc-tracer.svg)](https://badge.fury.io/py/malloc-tracer)
-[![Pyversions](https://img.shields.io/pypi/pyversions/malloc-tracer.svg?style=flat)](https://img.shields.io/pypi/pyversions/malloc-tracer.svg?style=flat)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://github.com/Hasenpfote/fpq/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/Hasenpfote/perfbench.svg?branch=master)](https://travis-ci.org/Hasenpfote/perfbench)
+[![PyPI version](https://badge.fury.io/py/perfbench.svg)](https://badge.fury.io/py/perfbench)
+[![Pyversions](https://img.shields.io/pypi/pyversions/perfbench.svg?style=flat)](https://img.shields.io/pypi/pyversions/perfbench.svg?style=flat)
 
-malloc_tracer
-=============
+perfbench
+=========
 
 ## About
-This is a debugging tool for tracing malloc that occurs inside a function or class.  
-
-```python
-import numpy as np
-import malloc_tracer
-
-
-def func(x, y, z):
-    dataset1 = np.empty((100, ), dtype=np.float64)
-    print('x', x)
-    dataset1 = np.empty((1000, ), dtype=np.float64)
-
-    l = [i for i in range(100000)]
-
-    if x == 0:
-        dataset4a = np.empty((100000, ), dtype=np.float64)
-        return 0
-    elif x == 1:
-        dataset4b = np.empty((100000, ), dtype=np.float64)
-        return 1
-
-    dataset3 = np.empty((3000, ), dtype=np.float64)
-    return 2
-
-
-tracer = malloc_tracer.Tracer(func)
-```
-
-This is equivalent to the following code.
-
-```python
-import numpy as np
-from tracemalloc import start, take_snapshot, stop
-
-
-SNAPSHOT = None
-
-
-def func(x, y, z):
-    try:
-        start()
-        dataset1 = np.empty((100,), dtype=np.float64)
-        print('x', x)
-        dataset1 = np.empty((1000,), dtype=np.float64)
-
-        l = [i for i in range(100000)]
-
-        if (x == 0):
-            dataset4a = np.empty((100000,), dtype=np.float64)
-            return 0
-        elif (x == 1):
-            dataset4b = np.empty((100000,), dtype=np.float64)
-            return 1
-
-        dataset3 = np.empty((3000,), dtype=np.float64)
-        return 2
-    finally:
-        global SNAPSHOT
-        SNAPSHOT = take_snapshot()
-        stop()
-```
+perfbench measures execution time of code snippets with Timeit and uses Plotly to visualize the results. 
 
 ## Feature
+* It is possible to select measurement modes.
+* It is possible to switch between layout sizes dynamically.
+* It is possible to switch between axes scales dynamically.
+* It is possible to switch between subplots dynamically.
+* The result of the benchmark can be saved locally as a html.
+* The result of the benchmark can be saved locally as a png.  
+**Requires installation of [orca](https://github.com/plotly/orca).**  
+**When not to use the function, you do not need to install orca separately.**
 
 ## Compatibility
-malloc_tracer works with Python 3.4 or higher.
+perfbench works with Python 3.4 or higher.
 
 ## Dependencies
+* [tqdm](https://github.com/tqdm/tqdm)(4.6.1 or higher.)
+* [cerberus](https://github.com/pyeve/cerberus)(1.1 or higher.)
+* [plotly](https://github.com/plotly/plotly.py)(3.0.0 or higher)
+* [notebook](https://github.com/jupyter/notebook)(5.3 or higher.)
+* [ipywidgets](https://github.com/jupyter-widgets/ipywidgets)(7.2 or higher.)
 
 ## Installation
 ```
-pip install malloc-tracer
+pip install perfbench
 ```
 
 ## Usage
-**Trace a function.**
+**Plotting a single figure.**  
+[Here](https://plot.ly/~Hasenpfote/8/perfbench-demo1/) is the demonstration.
 ```python
 import numpy as np
-import malloc_tracer
+from perfbench import *
 
 
-def func(x, y, z):
-    dataset1 = np.empty((100, ), dtype=np.float64)
-    print('x', x)
-    dataset1 = np.empty((1000, ), dtype=np.float64)
-
-    l = [i for i in range(100000)]
-
-    if x == 0:
-        dataset4a = np.empty((100000, ), dtype=np.float64)
-        return 0
-    elif x == 1:
-        dataset4b = np.empty((100000, ), dtype=np.float64)
-        return 1
-
-    dataset3 = np.empty((3000, ), dtype=np.float64)
-    return 2
-```
-
-```python
-tracer = malloc_tracer.Tracer(func)
-tracer.trace(
-    target_args=dict(x=1, y=2, z=3)
+bm = Benchmark(
+    datasets=[
+        Dataset(
+            factories=[
+                lambda n: np.random.uniform(low=-1., high=1., size=n).astype(np.float64),
+            ],
+            title='float64'
+        )
+    ],
+    dataset_sizes=[2 ** n for n in range(26)],
+    kernels=[
+        Kernel(
+            stmt='np.around(DATASET)',
+            setup='import numpy as np',
+            label='around'
+        ),
+        Kernel(
+            stmt='np.rint(DATASET)',
+            setup='import numpy as np',
+            label='rint'
+        )
+    ],
+    xlabel='dataset sizes',
+    title='around vs rint',
 )
+bm.run()
+bm.plot()
 ```
-![usage1](https://raw.githubusercontent.com/Hasenpfote/malloc_tracer/master/docs/usage1.png)
+![plot1](https://raw.githubusercontent.com/Hasenpfote/perfbench/master/docs/plotting_a_single_figure.png)
 
-**Trace a method.**
+
+**Plotting multiple plots on a single figure.**  
+[Here](https://plot.ly/~Hasenpfote/9/perfbench-demo2/) is the demonstration.
 ```python
 import numpy as np
-import malloc_tracer
+from perfbench import *
 
 
-class Klass(object):
-
-    CONSTANT = 'CONSTANT'
-
-    def __init__(self, value):
-        self._value = value
-
-    def method(self, x):
-        dataset1 = np.empty((100, ), dtype=np.float64)
-        print('x', x)
-        dataset1 = np.empty((1000, ), dtype=np.float64)
-
-        l = [i for i in range(100000)]
-
-        if x == 0:
-            dataset4a = np.empty((100000, ), dtype=np.float64)
-            return 0
-        elif x == 1:
-            dataset4b = np.empty((100000, ), dtype=np.float64)
-            return 1
-
-        dataset3 = np.empty((3000, ), dtype=np.float64)
-        return 2
-
-    @staticmethod
-    def smethod():
-        dataset = np.empty((100, ), dtype=np.float64)
-        l = [i for i in range(100000)]
-        print('Hello')
-        return dataset
-
-    @classmethod
-    def cmethod(cls, var):
-        return cls.CONSTANT + var
-```
-
-```python
-instance = Klass(1)
-tracer = malloc_tracer.Tracer(instance.method)
-tracer.trace(
-    target_args=dict(x=1)
+bm = Benchmark(
+    datasets=[
+        Dataset(
+            factories=[
+                lambda n: np.random.uniform(low=-1., high=1., size=n).astype(np.float16),
+            ],
+            title='float16'
+        ),
+        Dataset(
+            factories=[
+                lambda n: np.random.uniform(low=-1., high=1., size=n).astype(np.float32),
+            ],
+            title='float32'
+        ),
+        Dataset(
+            factories=[
+                lambda n: np.random.uniform(low=-1., high=1., size=n).astype(np.float64),
+            ],
+            title='float64'
+        )
+    ],
+    dataset_sizes=[2 ** n for n in range(26)],
+    kernels=[
+        Kernel(
+            stmt='np.around(DATASET)',
+            setup='import numpy as np',
+            label='around'
+        ),
+        Kernel(
+            stmt='np.rint(DATASET)',
+            setup='import numpy as np',
+            label='rint'
+        ),
+    ],
+    xlabel='dataset sizes',
+    title='around vs rint',
 )
+bm.run()
+bm.plot()
 ```
-![usage2a](https://raw.githubusercontent.com/Hasenpfote/malloc_tracer/master/docs/usage2a.png)
+![plot2](https://raw.githubusercontent.com/Hasenpfote/perfbench/master/docs/plotting_multiple_plots_on_a_single_figure.png)
 
-**Trace a static method.**
-```python
-tracer = malloc_tracer.Tracer(Klass.smethod)
-tracer.trace(
-    target_args=dict()
-)
-```
-![usage2b](https://raw.githubusercontent.com/Hasenpfote/malloc_tracer/master/docs/usage2b.png)
+![plot2](https://raw.githubusercontent.com/Hasenpfote/perfbench/master/docs/switching_between_subplots.png)
 
-**Trace a class method.**
-```python
-tracer = malloc_tracer.Tracer(Klass.cmethod)
-tracer.trace(
-    target_args=dict(var='Hello world.')
-)
-```
-![usage2c](https://raw.githubusercontent.com/Hasenpfote/malloc_tracer/master/docs/usage2c.png)
-
-**Displays related traces for each file.**
+**Switching between layout sizes.**
 ```python
 import numpy as np
-import malloc_tracer
+from perfbench import *
 
 
-global_var1 = None
-global_var2 = None
-
-
-def func2():
-    global global_var1
-    global global_var2
-    global_var1 = np.empty((1000, ), dtype=np.float64)
-    global_var2 = np.empty((10000, ), dtype=np.float64)
-
-
-def func(x, y, z):
-    dataset1 = np.empty((100, ), dtype=np.float64)
-    print('x', x)
-    dataset1 = np.empty((1000, ), dtype=np.float64)
-
-    l = [i for i in range(100000)]
-
-    func2()
-
-    if x == 0:
-        dataset4a = np.empty((100000, ), dtype=np.float64)
-        return 0
-    elif x == 1:
-        dataset4b = np.empty((100000, ), dtype=np.float64)
-        return 1
-
-    dataset3 = np.empty((3000, ), dtype=np.float64)
-    return 2
-```
-
-```python
-tracer = malloc_tracer.Tracer(func)
-tracer.trace(
-    target_args=dict(x=1, y=2, z=3),
-    related_traces_output_mode=malloc_tracer.RelatedTracesOutputMode.FOR_EACH_FILE
+bm = Benchmark(
+    datasets=[
+        Dataset(
+            factories=[
+                lambda n: np.random.uniform(low=-1., high=1., size=n).astype(np.float64),
+            ],
+            title='float64'
+        )
+    ],
+    dataset_sizes=[2 ** n for n in range(26)],
+    kernels=[
+        Kernel(
+            stmt='np.around(DATASET)',
+            setup='import numpy as np',
+            label='around'
+        ),
+        Kernel(
+            stmt='np.rint(DATASET)',
+            setup='import numpy as np',
+            label='rint'
+        )
+    ],
+    xlabel='dataset sizes',
+    title='around vs rint',
+    layout_sizes=[
+        LayoutSize(width=640, height=480, label='VGA'),
+        LayoutSize(width=800, height=600, label='SVGA'),
+        LayoutSize(width=1024, height=768, label='XGA'),
+        LayoutSize(width=1280, height=960, label='HD 720p'),
+    ]
 )
+bm.run()
+bm.plot()
 ```
-![usage3a](https://raw.githubusercontent.com/Hasenpfote/malloc_tracer/master/docs/usage3a.png)
+![plot3](https://raw.githubusercontent.com/Hasenpfote/perfbench/master/docs/switching_between_layout_sizes.png)
 
-**Displays related traces in descending order.**
+**Save as a html.**
 ```python
-tracer = malloc_tracer.Tracer(func)
-tracer.trace(
-    target_args=dict(x=1, y=2, z=3),
-    related_traces_output_mode=malloc_tracer.RelatedTracesOutputMode.IN_DESCENDING_ORDER
-)
+# same as above
+bm.save_as_html(filepath='/path/to/file')
 ```
-![usage3b](https://raw.githubusercontent.com/Hasenpfote/malloc_tracer/master/docs/usage3b.png)
 
-**Convenience function.**
+**Save as a png.**
 ```python
-malloc_tracer.trace(
-    func,
-    target_args=dict(x=1, y=2, z=3),
-    related_traces_output_mode=malloc_tracer.RelatedTracesOutputMode.IN_DESCENDING_ORDER
-)
+# same as above
+bm.save_as_png(filepath='/path/to/file', width=1280, height=960)
 ```
+
+**Other**  
+[Here](https://github.com/Hasenpfote/perfbench/tree/master/example) are a few examples.
 
 ## License
 This software is released under the MIT License, see LICENSE.

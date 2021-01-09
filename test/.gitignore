@@ -2,3 +2,5 @@
 /cover
 .coverage
 .noseids
+*.html
+*.png

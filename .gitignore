@@ -1,10 +1,12 @@
 /__pycache__
 /build
 /dist
-/malloc_tracer.egg-info
+/perfbench.egg-info
 /temp
 /sphinx
 /.tox
 /cover
 .coverage
 .noseids
+*.html
+*.png
