@@ -23,7 +23,7 @@ required=[
 
 if sys.version_info >= (3, 6):
     required.extend([
-        'numba<=0.46.0',
+        'numba<=0.45.0',
     ])
 elif sys.version_info >= (3, 5):
     required.extend([
