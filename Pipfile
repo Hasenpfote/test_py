@@ -16,4 +16,4 @@ twine = {version = "<2.0.0", markers="python_version < '3.5'"}
 tox = "*"
 
 [requires]
-python_version = "3.4"
+python_version = "3.5"

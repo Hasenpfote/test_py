@@ -20,7 +20,8 @@ required=[
     'tqdm>=4.6.1',
     'Cerberus>=1.1',
     'plotly>=3.0.0',
-    'notebook<6.0; python_version<"3.5"',
+    'notebook>=6.0',
+    'ipywidgets>=7.2',
 ]
 
 
@@ -39,7 +40,6 @@ if __name__ == '__main__':
         classifiers=[
             'Programming Language :: Python',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.4',
             'Programming Language :: Python :: 3.5',
             'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
@@ -51,6 +51,6 @@ if __name__ == '__main__':
             'Topic :: Software Development',
             'Topic :: Utilities'
         ],
-        python_requires='>=3.4',
+        python_requires='>=3.5',
         install_requires=required,
     )
