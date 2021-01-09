@@ -22,15 +22,15 @@ required=[
 ]
 
 if sys.version_info >= (3, 6):
-    required += [
+    required.extend([
         'numba>=0.38.0, <0.44.0;',
         'llvmlite<0.29.0;'
-    ]
+    ])
 elif sys.version_info >= (3, 5):
-    required += [
+    required.extend([
         'numba>=0.38.0, <0.44.0;',
         'llvmlite<0.29.0;'
-    ]
+    ])
 
 
 if __name__ == '__main__':
